@@ -8,17 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Artifacts (State Checkpoints)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: public/data/
+          pattern: run-results-*
+          merge-multiple: true
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Build Dashboard (React/Vite)
         run: |
@@ -26,7 +28,7 @@ jobs:
           npm run build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
