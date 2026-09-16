@@ -1,0 +1,25 @@
+name: Orchestrator Loop
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Run every 6 hours
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Fetch Current State
+        run: |
+          curl -O https://my-pages.github.io/data/state.json
+          # In a real scenario, this fetches the latest Checkpoint T value.
+
+      - name: Generate Matrix (Dynamic Scheduler)
+        run: python scripts/generate_matrix.py
+        # Evaluates required bounds and prepares T_start / T_end ranges for workers
+
+      - name: Trigger Execution Workers
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: worker-execution
+          client-payload: '{"t_start": 14500000, "t_end": 14550000}'

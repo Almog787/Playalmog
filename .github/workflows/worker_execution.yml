@@ -1,0 +1,49 @@
+name: Execution Workers
+on:
+  repository_dispatch:
+    types: [worker-execution]
+jobs:
+  compute-numeric:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Environment (C++20 / Rust & MPFR/GMP)
+        run: |
+          sudo apt-get install libmpfr-dev libgmp-dev
+          make engine-numeric
+
+      - name: Run Riemann Scan (Numerical)
+        run: |
+          # Limits memory to 3.5GB to avoid OOM
+          ulimit -v 3670016
+          ./engine-numeric --t-start ${{ github.event.client_payload.t_start }} --t-end ${{ github.event.client_payload.t_end }} --precision 256
+
+      - name: Check for Anomalies (Golden Standard / Grams Law)
+        run: |
+          if grep -q "ANOMALY" output/logs.txt; then
+            echo "Critical Anomaly Detected! Triggering Incident Response."
+            exit 1
+          fi
+
+      - name: Save Checkpoints
+        run: cp output/state.json ./state.json
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: run-results
+          path: output/
+
+  compute-formal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Lean 4 & Mathlib
+        run: elan install leanprover/lean4:nightly
+
+      - name: Run Formal Verification
+        run: lean --make src/Verification.lean

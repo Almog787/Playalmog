@@ -1,0 +1,6 @@
+{
+  "name": "Riemann Hypothesis Autonomous Tracker",
+  "description": "Autonomous system for solving and verifying the Riemann Hypothesis, based on GitHub Actions for computation/orchestration, documented in real-time via a GitHub Pages dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
