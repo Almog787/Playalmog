@@ -1,6 +1,8 @@
 # Game Theory Master: Unbeatable Tic-Tac-Toe & Connect 4
 ## מנוע תורת המשחקים: איקס-עיגול ו-4 בשורה בלתי מנוצחים
 
+🌐 **קישור לאתר בלייב (Live Site):** [https://almog787.github.io/Playalmog/](https://almog787.github.io/Playalmog/)
+
 An advanced, interactive Game Theory application containing mathematically unbeatable AI solvers for **Tic-Tac-Toe** (Strongly Solved) and **Connect 4** (Weakly Solved), with real-time Minimax tree evaluation, heatmaps, positional threat detection, and comprehensive mathematical proof encyclopedias.
 
 ---
