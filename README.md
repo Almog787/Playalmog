@@ -1,56 +1,33 @@
-# Riemann Hypothesis Autonomous Tracker
+# Game Theory Master: Unbeatable Tic-Tac-Toe & Connect 4
+## מנוע תורת המשחקים: איקס-עיגול ו-4 בשורה בלתי מנוצחים
 
-![Status](https://img.shields.io/badge/System-Autonomous-emerald)
-![Platform](https://img.shields.io/badge/Platform-GitHub_Actions-blue)
-![Dashboard](https://img.shields.io/badge/UI-React-cyan)
-
-<div dir="rtl">
-
-## סקירה (Overview)
-פרויקט זה מריץ מערכת אוטונומית במעגל סגור (Closed-Loop) לאיתור וחיפוש של פתרונות להשערת רימן (Riemann Hypothesis). המערכת מתבססת באופן מלא על התשתיות של GitHub Actions כפלטפורמת השרתים (Compute) שלה, ומשתמשת ב-GitHub Pages כדי להציג את נתוני החישוב בזמן אמת על גבי דשבורד ויזואלי.
-
-### כיצד התהליך עובד (GitHub Actions Loop)
-המערכת מורכבת מ-3 פעולות מרכזיות (Workflows) הפועלות בסנכרון מוחלט:
-1. **Orchestrator Loop (`orchestrator.yml`)**:
-   המנהל של המערכת. הוא מופעל אוטומטית כל 6 שעות (או בזמן עדכון קוד/דחיפה). הוא דוגם את הנתונים העדכניים ומייצר **מטריצת עבודה דינמית**. כלומר, הוא מחלק את טווחי הסריקה הבאים לפלחים ומעביר אותם במקביל לשלב הבא.
-2. **Execution Worker (`worker_execution.yml`)**:
-   אלו מנועי החישוב בפועל. ה-Orchestrator מריץ אותם במקביל. כרגע מוגדרים שני מנועים:
-   * **חישוב נומרי (Numerical)**: רץ ב-C++/Rust כדי למצוא שורשים על הישר הקריטי באמצעות פונקציית Z(t) של הארדי.
-   * **אימות פורמלי (Formal)**: רץ ב-Lean 4 בניסיון לגזור אוטומטית למות והוכחות תיאורטיות מהספרייה הקיימת.
-   התוצאות שלהם נארזות ל-Artifacts (קבצי JSON).
-3. **Dashboard Deploy (`dashboard_deploy.yml`)**:
-   ברגע שה-Orchestrator מסיים לאסוף את כל התוצאות מה-Workers, תהליך זה מתעורר. הוא אוסף את כל ה-Artifacts החדשים אל תיקיית הנתונים, מקמפל את אפליקציית ה-React מחדש וזורק אותה ל-GitHub Pages.
-
-### כיצד להשתמש בדשבורד (Dashboard Usage)
-הדשבורד משמש כתחנת הבקרה הויזואלית שלך לראות מה המערכת "חושבת" כרגע.
-* **החלפת שפה:** בראש הדף קיים כפתור להחלפה מהירה בין עברית לאנגלית.
-* **הסברים (Tooltips):** ליד כל רכיב מידע (למשל: "גובה סריקה נוכחי", "אפסים מאומתים", או בגרפים) תמצא אייקון סימן שאלה (❔). רפרוף עם העכבר על האייקון יציג הסבר מפורט מה הרכיב אומר וכיצד הוא פועל.
-* **יומן ניסיונות:** בתחתית הדף תמצא טבלה המרכזת את כל הרצות ה-GitHub Actions האחרונות, ניתן לסנן אותה להצגת הוכחות פורמליות לעומת חישובים נומריים.
-
-</div>
+An advanced, interactive Game Theory application containing mathematically unbeatable AI solvers for **Tic-Tac-Toe** (Strongly Solved) and **Connect 4** (Weakly Solved), with real-time Minimax tree evaluation, heatmaps, positional threat detection, and comprehensive mathematical proof encyclopedias.
 
 ---
 
-<div dir="ltr">
+### 🇮🇱 תכונות המערכת (Hebrew)
+1. **איקס עיגול בלתי מנוצח (Tic-Tac-Toe)**:
+   - מנוע Minimax מלא עם משקלי עומק (בלתי ניתן לניצחון לעולם – תמיד כופה תיקו או מנצל טעויות לניצחון).
+   - מפת הערכות בזמן אמת (Heatmap) על כל משבצת בלוח (ניצחון, תיקו, הפסד).
+   - מד יתרון עמדתי חי (Evaluation Bar).
+   - אנציקלופדיית פתיחות ומלכודות קלאסיות (מלכודת פינות נגדיות, משולש, הענשת צלעות).
 
-## Overview
-This project runs a closed-loop autonomous system to track and compute roots for the Riemann Hypothesis. It leverages GitHub Actions as its core compute infrastructure and GitHub Pages for real-time dashboard tracking and analytics.
+2. **4 בשורה פתור מתמטית (Connect 4)**:
+   - מבוסס על הוכחת ויקטור אליס (1988) – שחקן ראשון (אדום) שפותח במרכז (עמודה 4) מנצח בהכרח תוך 41 מהלכים.
+   - מנוע Alpha-Beta Pruning עמוק עם זיהוי איומים מיידי, מניעת שגיאות פטאליות (Blunders) ולוח משקלים מרכזי.
+   - הערכת ציון לכל עמודה בשידור חי.
+   - שכבת "חוק הזוגיות" (Parity Law) המדגישה שורות זוגיות מול אי-זוגיות.
 
-### GitHub Actions Pipeline
-The automated loop runs entirely within GitHub Actions across three primary workflows:
-1. **Orchestrator Loop (`orchestrator.yml`)**:
-   The brains of the operation. Triggered via a cron schedule (every 6 hours) or on pushes to `main`. It generates a dynamic execution matrix based on the latest checkpoint to assign chunks of calculations.
-2. **Execution Worker (`worker_execution.yml`)**:
-   A reusable workflow invoked by the Orchestrator. It spins up parallel jobs:
-   * **Numerical Engine**: Calculates roots along the critical line.
-   * **Formal Prover**: Uses Lean 4 and Mathlib to verify and generate mathematical lemmas.
-   Results are uploaded as JSON artifacts.
-3. **Dashboard Deploy (`dashboard_deploy.yml`)**:
-   Listens for the Orchestrator to finish. It downloads all generated artifacts, aggregates the `state.json` and `experiments.json`, rebuilds the React/Vite application, and deploys it directly to GitHub Pages.
+3. **אקדמיית תורת המשחקים וחוקר עץ החלטות (Minimax Decision Tree)**:
+   - הסבר מקיף על משפט המינימקס של ג'ון פון נוימן (1928), שיווי משקל נאש (Nash Equilibrium) ודרגות פתרון משחקים.
+   - הדמיה ויזואלית חיה של עץ ההחלטות והצמתים המחושבים.
+   - תמיכה מלאה בעברית ובאנגלית (כולל RTL).
 
-### How to use the Dashboard
-* **Localization:** Use the toggle button in the header to switch between Hebrew (RTL) and English (LTR).
-* **Tooltips:** Hover over the help icon (❔) next to any widget (KPIs, Charts, Logs) to read detailed explanations about what the metric means and how it functions within the pipeline.
-* **Experiment Journal:** Use the filter tabs above the table to isolate specific run types (Numerical vs. Formal Provers).
+---
 
-</div>
+### 🇬🇧 Key Features (English)
+- **Unbeatable Minimax Engine**: Deep search and memoized state lookup that guarantees zero losses.
+- **Real-Time Column & Cell Evaluation**: Visual overlays showing exact game-theoretic values (+Win, 0 Draw, -Loss).
+- **Interactive Solved Traps**: Test classic forks, zugzwangs, and parity counters interactively.
+- **Decision Tree Visualizer**: Explore the minimax branches, pruning points, and principal variation.
+- **Audio Synthesizer**: Clean Web Audio API sound effects with confetti on game completion.

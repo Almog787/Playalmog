@@ -1,6 +1,6 @@
 {
-  "name": "Riemann Hypothesis Autonomous Tracker",
-  "description": "Autonomous system for solving and verifying the Riemann Hypothesis, based on GitHub Actions for computation/orchestration, documented in real-time via a GitHub Pages dashboard.",
+  "name": "Deterministic Game Theory Engine: Unbeatable Tic-Tac-Toe & Connect 4",
+  "description": "Deterministic 0ms pre-computed decision tree engine for Tic-Tac-Toe and Connect 4 with instant O(1) table lookups, solved win strategies, and zero external AI dependency.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
