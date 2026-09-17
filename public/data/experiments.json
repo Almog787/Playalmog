@@ -1,8 +1,0 @@
-[
-  {"run_id": "RUN-9942", "commit": "a1b2c3d", "t_start": 14450000, "t_end": 14500000, "cpu_time_sec": 1420, "peak_ram_mb": 3102, "zeros_found": 50000, "status": "SUCCESS", "type": "Numerical"},
-  {"run_id": "RUN-9941", "commit": "a1b2c3d", "t_start": 14400000, "t_end": 14450000, "cpu_time_sec": 1415, "peak_ram_mb": 3050, "zeros_found": 49980, "status": "SUCCESS", "type": "Numerical"},
-  {"run_id": "RUN-9940", "commit": "f9e8d7c", "t_start": 14350000, "t_end": 14400000, "cpu_time_sec": 1430, "peak_ram_mb": 3400, "zeros_found": 50010, "status": "SUCCESS", "type": "Numerical"},
-  {"run_id": "RUN-9939", "commit": "b8a1c9e", "t_start": 14300000, "t_end": 14350000, "cpu_time_sec": 1390, "peak_ram_mb": 2900, "zeros_found": 49950, "status": "SUCCESS", "type": "Numerical"},
-  {"run_id": "RUN-9938", "commit": "d7e6f5a", "t_start": 14250000, "t_end": 14300000, "cpu_time_sec": 1450, "peak_ram_mb": 3500, "zeros_found": 50100, "status": "RECOVERED", "type": "Numerical"},
-  {"run_id": "FRM-0142", "commit": "z9y8x7w", "t_start": 0, "t_end": 0, "cpu_time_sec": 2100, "peak_ram_mb": 1800, "zeros_found": 0, "status": "SUCCESS", "type": "Formal (Lean 4)"}
-]
