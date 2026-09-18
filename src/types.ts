@@ -1,71 +1,70 @@
-export type GameType = 'tictactoe' | 'connect4' | 'nim';
-export type ActiveTab = 'play' | 'encyclopedia' | 'theory' | 'tree';
-export type Language = 'he' | 'en';
+// Type definitions for Realistic Water Physics Simulation
 
-export type TTTPlayer = 'X' | 'O';
-export type TTTBoard = (TTTPlayer | null)[];
+export type EnvironmentPresetId = 'tropical' | 'luxury_pool' | 'sunset' | 'bioluminescence' | 'storm';
 
-export type C4Player = 'R' | 'Y'; // R = Red (Player 1), Y = Yellow (Player 2)
-export type C4Board = (C4Player | null)[][]; // 6 rows x 7 cols
+export type ToolMode = 'ripple' | 'rain' | 'wave_generator' | 'spawn_object' | 'tsunami';
 
-export interface NimMove {
-  pileIndex: number;
-  count: number;
+export type CameraView = 'perspective_3d' | 'top_down' | 'side_tank' | 'underwater';
+
+export type FloatingObjectType = 'sphere' | 'duck' | 'wood_block' | 'buoy' | 'lotus';
+
+export interface WaterPhysicsConfig {
+  waveSpeed: number;        // Propagation speed c (0.5 to 3.0)
+  damping: number;          // Wave energy dissipation (0.94 to 0.998)
+  surfaceTension: number;   // Dispersion / smoothing factor (0.0 to 0.3)
+  viscosity: number;        // Fluid resistance (0.01 to 0.2)
+  gravity: number;          // Gravity acceleration (m/s^2)
+  depth: number;            // Water depth (for absorption and caustics)
+  refractionIndex: number;  // Snell's Law IOR (e.g. 1.333 for water)
+  clarity: number;          // Transparency (turbidity) 0 to 1
+  foamThreshold: number;    // Wave steepness for whitecap generation
 }
 
-export interface NimState {
-  piles: number[];
-  mode: 'normal' | 'misere';
+export interface EnvironmentConfig {
+  id: EnvironmentPresetId;
+  nameHe: string;
+  nameEn: string;
+  descriptionHe: string;
+  descriptionEn: string;
+  waterColorSurface: string;   // Hex / rgb
+  waterColorDeep: string;      // Deep absorption color
+  floorType: 'sand_pebbles' | 'blue_tiles' | 'ocean_rock' | 'deep_chasm';
+  sunElevation: number;        // Degrees (10 to 90)
+  sunAzimuth: number;          // Degrees (0 to 360)
+  sunColor: string;
+  skyColorTop: string;
+  skyColorHorizon: string;
+  causticsIntensity: number;   // 0 to 2.0
+  bioluminescentGlow: boolean; // Electric blue reaction on wave peak
+  ambientLight: number;        // 0 to 1
+  rainAllowed: boolean;
+  defaultRainRate: number;     // drops per second
 }
 
-export interface TTTMoveEval {
-  index: number;
-  score: number; // +10 = Win, 0 = Draw, -10 = Loss
-  outcome: 'win' | 'draw' | 'loss';
-  depth: number;
-  isBest: boolean;
-}
-
-export interface C4ColumnEval {
-  col: number;
-  score: number;
-  outcome: 'win' | 'draw' | 'loss' | 'neutral';
-  depthFound: number;
-  isBest: boolean;
-  isValid: boolean;
-  threatLevel: 'none' | 'critical' | 'winning' | 'blunder';
-  commentary?: string;
-}
-
-export interface MinimaxTreeNode {
+export interface BuoyantObject {
   id: string;
-  name: string;
-  move?: number;
-  player: string;
-  score: number;
-  depth: number;
-  isBestMove?: boolean;
-  isPruned?: boolean;
-  children?: MinimaxTreeNode[];
+  type: FloatingObjectType;
+  x: number;       // Grid / 3D coordinate (-1 to 1)
+  y: number;       // Vertical position (height)
+  z: number;       // Depth coordinate (-1 to 1)
+  vx: number;      // Velocity X
+  vy: number;      // Velocity Y
+  vz: number;      // Velocity Z
+  pitch: number;   // Tilt angle along X
+  roll: number;    // Tilt angle along Z
+  radius: number;  // Bounding radius
+  mass: number;    // Mass in kg
+  buoyancyFactor: number; // Volume vs mass ratio
+  color: string;
+  isDragging?: boolean;
 }
 
-export interface PrecomputedNode {
-  boardKey: string;
-  bestMove: number;
-  score: number;
-  moveEvaluations: Record<number, number>;
-}
-
-export interface SolvedOpeningTrap {
-  id: string;
-  titleEn: string;
-  titleHe: string;
-  descEn: string;
-  descHe: string;
-  game: GameType;
-  initialMoves: number[];
-  recommendedMove: number;
-  whyEn: string;
-  whyHe: string;
-  dangerLevel: 'high' | 'medium' | 'theoretical';
+export interface PhysicsTelemetry {
+  fps: number;
+  simTimeMs: number;
+  activeWavesEnergy: number; // in Joules / relative
+  peakWaveHeight: number;    // in cm
+  rmsWaveHeight: number;     // in cm
+  objectCount: number;
+  rainDropsPerSec: number;
 }

@@ -1,35 +1,46 @@
-# Game Theory Master: Unbeatable Tic-Tac-Toe & Connect 4
-## מנוע תורת המשחקים: איקס-עיגול ו-4 בשורה בלתי מנוצחים
+# Realistic Water Physics Simulation | הדמיית פיזיקת מים מציאותית בתלת-ממד
+## High-Fidelity Interactive Water Simulation for GitHub Pages
 
-🌐 **קישור לאתר בלייב (Live Site):** [https://almog787.github.io/Playalmog/](https://almog787.github.io/Playalmog/)
+🌐 **קישור לאתר בלייב (Live GitHub Pages):** [https://almog787.github.io/Playalmog/](https://almog787.github.io/Playalmog/)
 
-An advanced, interactive Game Theory application containing mathematically unbeatable AI solvers for **Tic-Tac-Toe** (Strongly Solved) and **Connect 4** (Weakly Solved), with real-time Minimax tree evaluation, heatmaps, positional threat detection, and comprehensive mathematical proof encyclopedias.
-
----
-
-### 🇮🇱 תכונות המערכת (Hebrew)
-1. **איקס עיגול בלתי מנוצח (Tic-Tac-Toe)**:
-   - מנוע Minimax מלא עם משקלי עומק (בלתי ניתן לניצחון לעולם – תמיד כופה תיקו או מנצל טעויות לניצחון).
-   - מפת הערכות בזמן אמת (Heatmap) על כל משבצת בלוח (ניצחון, תיקו, הפסד).
-   - מד יתרון עמדתי חי (Evaluation Bar).
-   - אנציקלופדיית פתיחות ומלכודות קלאסיות (מלכודת פינות נגדיות, משולש, הענשת צלעות).
-
-2. **4 בשורה פתור מתמטית (Connect 4)**:
-   - מבוסס על הוכחת ויקטור אליס (1988) – שחקן ראשון (אדום) שפותח במרכז (עמודה 4) מנצח בהכרח תוך 41 מהלכים.
-   - מנוע Alpha-Beta Pruning עמוק עם זיהוי איומים מיידי, מניעת שגיאות פטאליות (Blunders) ולוח משקלים מרכזי.
-   - הערכת ציון לכל עמודה בשידור חי.
-   - שכבת "חוק הזוגיות" (Parity Law) המדגישה שורות זוגיות מול אי-זוגיות.
-
-3. **אקדמיית תורת המשחקים וחוקר עץ החלטות (Minimax Decision Tree)**:
-   - הסבר מקיף על משפט המינימקס של ג'ון פון נוימן (1928), שיווי משקל נאש (Nash Equilibrium) ודרגות פתרון משחקים.
-   - הדמיה ויזואלית חיה של עץ ההחלטות והצמתים המחושבים.
-   - תמיכה מלאה בעברית ובאנגלית (כולל RTL).
+הדמיית מים אינטראקטיבית מציאותית מבוססת חוקי פיזיקה אמיתיים (משוואת הגלים, שבירת אור לפי חוק סנל, אפקט פרנל, קאוסטיקה דינמית, כוח ציפה לפי חוק ארכימדס) ברינדור תלת-ממדי מתקדם וביצועי 60+ FPS.
 
 ---
 
-### 🇬🇧 Key Features (English)
-- **Unbeatable Minimax Engine**: Deep search and memoized state lookup that guarantees zero losses.
-- **Real-Time Column & Cell Evaluation**: Visual overlays showing exact game-theoretic values (+Win, 0 Draw, -Loss).
-- **Interactive Solved Traps**: Test classic forks, zugzwangs, and parity counters interactively.
-- **Decision Tree Visualizer**: Explore the minimax branches, pruning points, and principal variation.
-- **Audio Synthesizer**: Clean Web Audio API sound effects with confetti on game completion.
+### 🌊 תכונות פיזיקליות וגרפיות (Features)
+
+1. **פיזיקת גלים מדויקת (Shallow Water Wave Equation)**:
+   - פתרון משוואת הגלים הדו-ממדית בזמן אמת: $\frac{\partial^2 h}{\partial t^2} = c^2 \nabla^2 h - \gamma \frac{\partial h}{\partial t}$.
+   - מהירות התפשטות גל, מתח פנים, חיכוך/צמיגות (מים, שמן, כספית).
+   - גלי התאבכות, נפיצה, עקיפה והחזרות מדפנות המכל.
+
+2. **אופטיקה מציאותית (Realistic Optics)**:
+   - **שבירת אור (Refraction)**: שבירת קרניים אופטית של קרקעית הבריכה והסלעים לפי מקדם השבירה ($n = 1.333$).
+   - **אפקט פרנל (Fresnel Reflection)**: חישוב יחס ההחזרה מול החדירה של האור על פי זווית הפגיעה (קירוב שליק).
+   - **בליעת צבע לפי עומק (Beer-Lambert Absorption)**: בליעה פיזיקלית מדויקת של אור אדום לעומת גווני טורקיז וכחול ים עמוק.
+   - **קאוסטיקה חיה (Dynamic Caustics)**: קרני אור מרוכזות על קרקעית המים המרקדות בהתאם לגלים.
+   - **ברק שמש ספקולרי (Specular Sunlight)**: נצנוצי שמש ממוקדים (Blinn-Phong) בהתאם למפת הנורמלים של פני המים.
+
+3. **גופים צפים עם חוק ארכימדס (Buoyant Rigid Bodies)**:
+   - כדורים, ברווז גומי, קוביות עץ, מגדלור צף ופרחי לוטוס.
+   - חישוב כוחות כבידה ($F_g$), כוח עילוי ציפה יחסי לנפח השקוע ($F_b = \rho V g$), מומנטי פיתול להתאמה לפני השטח של הגל, והיווצרות שובל גלים בעת תנועה.
+   - אפשרות לאינטראקציה ישירה – גרירת חפצים, השלכה לתוך המים והקפצה.
+
+4. **סביבות מים מגוונות (Environments & Lighting)**:
+   - 🏝️ **לגונה טרופית (Tropical Lagoon)**: חול לבן, שמש עזה, מי טורקיז צלולים במיוחד.
+   - 🏊 **בריכת יוקרה (Luxury Pool)**: אריחי פסיפס כחולים, גבולות זכוכית וקאוסטיקה בוהקת.
+   - 🌅 **שקיעה באוקיינוס (Ocean Sunset)**: אור זהוב, השתקפויות שמיים דרמטיות וגלים רגועים.
+   - 🌌 **ביולומיננסנציה לילית (Bioluminescent Night)**: מים עמוקים זוהרים באור כחול-זרחני מרהיב בכל מגע, לאור ירח וכוכבים.
+   - ⛈️ **סערה ימית (Stormy Ocean)**: גשם סוחף, עננים כבדים וקצף גלים סוער.
+
+5. **כלי אינטראקציה (Interactive Tools)**:
+   - גרירת אצבע/עכבר ליצירת אדוות וגלים.
+   - מחולל גשם עם עוצמה נשלטת.
+   - תותח טיפות ומחולל גלים תדיר (Oscillator) להדגמת תבניות התאבכות.
+   - יצירת צונאמי וגלי הדף מרכזיים.
+   - סימולציית סאונד מים אקוסטית פרוצדורלית באמצעות Web Audio API (נתזים, טיפות, אדוות).
+
+6. **תמיכה מלאה ב-GitHub Pages**:
+   - מותאם ל-GitHub Actions אוטומטי (`deploy-pages.yml`).
+   - נתיבים יחסיים (`base: './'`).
+   - עובד חלק בכל דפדפן ומכשיר נייד/טאבלט.

@@ -1,6 +1,6 @@
 {
-  "name": "Deterministic Game Theory Engine: Unbeatable Tic-Tac-Toe & Connect 4",
-  "description": "Deterministic 0ms pre-computed decision tree engine for Tic-Tac-Toe and Connect 4 with instant O(1) table lookups, solved win strategies, and zero external AI dependency.",
+  "name": "Realistic Water Physics Simulation",
+  "description": "Interactive realistic 3D water graphics with real-time shallow water wave equations, caustics, refraction, reflections, buoyant objects, and dynamic environmental effects.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

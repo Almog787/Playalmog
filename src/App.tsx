@@ -1,197 +1,172 @@
 import React, { useState, useEffect } from 'react';
-import { GameType, ActiveTab, Language } from './types';
-import { TicTacToeGame } from './components/TicTacToeGame';
-import { Connect4Game } from './components/Connect4Game';
-import { NimGame } from './components/NimGame';
-import { GameTheoryAcademy } from './components/GameTheoryAcademy';
-import { GameTreeVisualizer } from './components/GameTreeVisualizer';
-import { soundFx } from './utils/sound';
-import { 
-  Gamepad2, 
-  BookOpen, 
-  GitBranch, 
-  Volume2, 
-  VolumeX, 
-  Globe, 
-  Brain, 
-  Grid3X3, 
-  CircleDot,
-  Calculator
-} from 'lucide-react';
+import {
+  EnvironmentPresetId,
+  ToolMode,
+  CameraView,
+  FloatingObjectType,
+  WaterPhysicsConfig,
+  PhysicsTelemetry
+} from './types';
+import { ENVIRONMENTS } from './utils/environments';
+import { WaterCanvas3D } from './components/WaterCanvas3D';
+import { WaterControls } from './components/WaterControls';
+import { PhysicsHUD } from './components/PhysicsHUD';
+import { waterAudio } from './utils/waterAudio';
+import { Waves, ExternalLink, Github } from 'lucide-react';
 
 export function App() {
-  const [game, setGame] = useState<GameType>('tictactoe');
-  const [tab, setTab] = useState<ActiveTab>('play');
-  const [lang, setLang] = useState<Language>('he');
-  const [isMuted, setIsMuted] = useState(false);
+  const [lang, setLang] = useState<'he' | 'en'>('he');
+  const [currentEnv, setCurrentEnv] = useState<EnvironmentPresetId>('tropical');
+  const [toolMode, setToolMode] = useState<ToolMode>('ripple');
+  const [cameraView, setCameraView] = useState<CameraView>('perspective_3d');
+  const [spawnType, setSpawnType] = useState<FloatingObjectType>('duck');
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [rainRate, setRainRate] = useState<number>(0);
 
-  // Set document dir and lang based on chosen language
+  // Physics Configuration State
+  const [physicsConfig, setPhysicsConfig] = useState<WaterPhysicsConfig>({
+    waveSpeed: 1.6,
+    damping: 0.985,
+    surfaceTension: 0.08,
+    viscosity: 0.04,
+    gravity: 9.8,
+    depth: 1.8,
+    refractionIndex: 1.333,
+    clarity: 0.85,
+    foamThreshold: 0.045
+  });
+
+  // Telemetry state
+  const [telemetry, setTelemetry] = useState<PhysicsTelemetry>({
+    fps: 60,
+    simTimeMs: 16.6,
+    activeWavesEnergy: 0,
+    peakWaveHeight: 0,
+    rmsWaveHeight: 0,
+    objectCount: 3,
+    rainDropsPerSec: 0
+  });
+
+  // Key to force reset / calm water
+  const [waterKey, setWaterKey] = useState<number>(0);
+
   useEffect(() => {
     document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const toggleSound = () => {
-    const muted = soundFx.toggleMute();
+  // When environment changes, sync default rain rate
+  const handleSelectEnv = (envKey: EnvironmentPresetId) => {
+    setCurrentEnv(envKey);
+    const env = ENVIRONMENTS[envKey];
+    setRainRate(env.defaultRainRate);
+    if (envKey === 'storm') {
+      setPhysicsConfig((prev) => ({ ...prev, waveSpeed: 2.2, damping: 0.99, foamThreshold: 0.03 }));
+    } else if (envKey === 'luxury_pool') {
+      setPhysicsConfig((prev) => ({ ...prev, waveSpeed: 1.5, damping: 0.982, clarity: 0.95 }));
+    }
+  };
+
+  const handleUpdatePhysics = (updates: Partial<WaterPhysicsConfig>) => {
+    setPhysicsConfig((prev) => ({ ...prev, ...updates }));
+  };
+
+  const handleToggleMute = () => {
+    const muted = waterAudio.toggleMute();
     setIsMuted(muted);
   };
 
+  const handleResetWater = () => {
+    setWaterKey((k) => k + 1);
+    waterAudio.playSplash(0.3);
+  };
+
+  const currentEnvConfig = ENVIRONMENTS[currentEnv];
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-slate-950 font-sans">
-      
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/80 px-4 sm:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          
-          {/* Logo & Title */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 p-0.5 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                <Brain className="w-5 h-5 text-cyan-400" />
-              </div>
+    <div className="relative w-screen h-screen overflow-hidden bg-slate-950 font-sans text-slate-100 flex flex-col">
+      {/* Top Header Bar */}
+      <header
+        id="app-header"
+        className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-2.5 bg-gradient-to-b from-slate-950/80 to-transparent pointer-events-auto"
+        dir={lang === 'he' ? 'rtl' : 'ltr'}
+      >
+        {/* Brand & Title */}
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center shadow-lg shadow-cyan-500/20 backdrop-blur-md">
+            <Waves className="w-5 h-5 text-cyan-400 animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm sm:text-base font-black tracking-tight text-white">
+                {lang === 'he' ? 'הדמיית מים מציאותית' : 'Realistic Water Simulation'}
+              </h1>
+              <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-400/30">
+                3D Wave Physics
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-black tracking-tight bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                  {lang === 'he' ? 'תורת המשחקים: מנוע הפתרונות המלא' : 'Game Theory Solved Suite'}
-                </h1>
-                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                  UNBEATABLE
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">
-                {lang === 'he' ? 'איקס-עיגול, 4 בשורה ומשחק נים פתורים מתמטית ב-0ms' : 'Unbeatable Tic-Tac-Toe, Connect 4 & Nim Solvers'}
-              </p>
-            </div>
+            <p className="text-[11px] text-slate-400 hidden sm:block">
+              {lang === 'he'
+                ? 'משוואת הגלים, שבירת סנל, אפקט פרנל, קאוסטיקה וכוח ציפה'
+                : 'Wave equation, Snell refraction, Fresnel, caustics & Archimedes buoyancy'}
+            </p>
           </div>
+        </div>
 
-          {/* Primary Game Selector Switcher (3 Solved Games) */}
-          <div className="bg-slate-950 p-1 rounded-2xl border border-slate-800 flex items-center gap-1 shadow-inner">
-            <button
-              onClick={() => { setGame('tictactoe'); setTab('play'); }}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-                game === 'tictactoe'
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/30'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Grid3X3 className="w-4 h-4" />
-              <span>{lang === 'he' ? 'איקס-עיגול' : 'Tic-Tac-Toe'}</span>
-            </button>
-            <button
-              onClick={() => { setGame('connect4'); setTab('play'); }}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-                game === 'connect4'
-                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/30'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <CircleDot className="w-4 h-4" />
-              <span>{lang === 'he' ? '4 בשורה' : 'Connect 4'}</span>
-            </button>
-            <button
-              onClick={() => { setGame('nim'); setTab('play'); }}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-                game === 'nim'
-                  ? 'bg-purple-500 text-slate-950 shadow-md shadow-purple-500/30'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Calculator className="w-4 h-4" />
-              <span>{lang === 'he' ? 'משחק נים' : 'Nim Game'}</span>
-            </button>
-          </div>
-
-          {/* Utility Tools (Language & Audio) */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLang(l => (l === 'he' ? 'en' : 'he'))}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-semibold transition-all"
-              title="Change Language"
-            >
-              <Globe className="w-3.5 h-3.5 text-cyan-400" />
-              <span>{lang === 'he' ? 'English' : 'עברית'}</span>
-            </button>
-
-            <button
-              onClick={toggleSound}
-              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 transition-all"
-              title={isMuted ? 'Unmute Sound' : 'Mute Sound'}
-            >
-              {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
-            </button>
-          </div>
-
+        {/* GitHub Pages Live Link */}
+        <div className="flex items-center gap-2">
+          <a
+            href="https://almog787.github.io/Playalmog/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="GitHub Pages Live URL"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-xs text-slate-200 transition-all shadow-md backdrop-blur-md"
+          >
+            <Github className="w-3.5 h-3.5" />
+            <span className="hidden md:inline font-mono">almog787/Playalmog</span>
+            <ExternalLink className="w-3 h-3 text-slate-400" />
+          </a>
         </div>
       </header>
 
-      {/* Sub-Header Navigation Tabs */}
-      <div className="bg-slate-900/40 border-b border-slate-800/60 px-4 py-2">
-        <div className="max-w-7xl mx-auto flex items-center justify-center sm:justify-start gap-2 overflow-x-auto">
-          <button
-            onClick={() => setTab('play')}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              tab === 'play'
-                ? 'bg-slate-800 text-cyan-300 border border-cyan-500/30 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Gamepad2 className="w-4 h-4 text-cyan-400" />
-            <span>{lang === 'he' ? 'לוח משחק וניתוח חי' : 'Interactive Board & Solver'}</span>
-          </button>
+      {/* Physics HUD & Educational Modal */}
+      <PhysicsHUD telemetry={telemetry} lang={lang} />
 
-          <button
-            onClick={() => setTab('theory')}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              tab === 'theory'
-                ? 'bg-slate-800 text-amber-300 border border-amber-500/30 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <BookOpen className="w-4 h-4 text-amber-400" />
-            <span>{lang === 'he' ? 'אקדמיית תורת המשחקים' : 'Game Theory Academy'}</span>
-          </button>
-
-          <button
-            onClick={() => setTab('tree')}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${
-              tab === 'tree'
-                ? 'bg-slate-800 text-emerald-300 border border-emerald-500/30 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <GitBranch className="w-4 h-4 text-emerald-400" />
-            <span>{lang === 'he' ? 'חוקר עץ החלטות (Tree)' : 'Decision Tree Explorer'}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main View Area */}
-      <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">
-        {tab === 'play' && (
-          game === 'tictactoe' ? (
-            <TicTacToeGame lang={lang} />
-          ) : game === 'connect4' ? (
-            <Connect4Game lang={lang} />
-          ) : (
-            <NimGame lang={lang} />
-          )
-        )}
-
-        {tab === 'theory' && <GameTheoryAcademy lang={lang} />}
-
-        {tab === 'tree' && <GameTreeVisualizer lang={lang} />}
+      {/* 3D Realistic Water Canvas Stage */}
+      <main className="flex-1 w-full h-full relative">
+        <WaterCanvas3D
+          key={waterKey}
+          physicsConfig={physicsConfig}
+          envConfig={currentEnvConfig}
+          toolMode={toolMode}
+          cameraView={cameraView}
+          selectedSpawnType={spawnType}
+          rainRate={rainRate}
+          onTelemetryUpdate={setTelemetry}
+          lang={lang}
+        />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-4 px-6 text-center text-xs text-slate-500">
-        <p>
-          {lang === 'he' 
-            ? 'מנוע מתמטי דטרמיניסטי בלתי מנוצח לתורת המשחקים | פתרון מלא ב-0ms לאיקס-עיגול, 4 בשורה ומשחק נים'
-            : 'Unbeatable Game-Theoretic Solver | Strongly Solved Tic-Tac-Toe, Connect 4 & Nim Engine'}
-        </p>
-      </footer>
-
+      {/* Interactive Floating Controls Bar */}
+      <WaterControls
+        currentEnv={currentEnv}
+        onSelectEnv={handleSelectEnv}
+        toolMode={toolMode}
+        onSelectTool={setToolMode}
+        cameraView={cameraView}
+        onSelectCamera={setCameraView}
+        spawnType={spawnType}
+        onSelectSpawnType={setSpawnType}
+        physicsConfig={physicsConfig}
+        onUpdatePhysics={handleUpdatePhysics}
+        rainRate={rainRate}
+        onUpdateRainRate={setRainRate}
+        isMuted={isMuted}
+        onToggleMute={handleToggleMute}
+        onResetWater={handleResetWater}
+        lang={lang}
+        onToggleLang={() => setLang((l) => (l === 'he' ? 'en' : 'he'))}
+      />
     </div>
   );
 }
