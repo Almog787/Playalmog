@@ -1,6 +1,6 @@
 {
-  "name": "Realistic Water Physics Simulation",
-  "description": "Interactive realistic 3D water graphics with real-time shallow water wave equations, caustics, refraction, reflections, buoyant objects, and dynamic environmental effects.",
+  "name": "React Bits: Animated Component Explorer & Playground",
+  "description": "Clean repository workspace with README documentation",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

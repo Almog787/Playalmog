@@ -1,46 +1,42 @@
-# Realistic Water Physics Simulation | הדמיית פיזיקת מים מציאותית בתלת-ממד
-## High-Fidelity Interactive Water Simulation for GitHub Pages
+# 4D Hyper-Space Geometry & Physics Simulator | סימולטור 4 ממדים
 
-🌐 **קישור לאתר בלייב (Live GitHub Pages):** [https://almog787.github.io/Playalmog/](https://almog787.github.io/Playalmog/)
+🌐 **קישור לאתר בלייב (Live Site):** [https://almog787.github.io/Playalmog/](https://almog787.github.io/Playalmog/)
 
-הדמיית מים אינטראקטיבית מציאותית מבוססת חוקי פיזיקה אמיתיים (משוואת הגלים, שבירת אור לפי חוק סנל, אפקט פרנל, קאוסטיקה דינמית, כוח ציפה לפי חוק ארכימדס) ברינדור תלת-ממדי מתקדם וביצועי 60+ FPS.
+An advanced, interactive 4D hyper-space visualization suite containing 4D polytope engines (Tesseract, 120-cell, 600-cell, 24-cell, 16-cell, 5-cell, 4D Torus, 4D Spherinder, 4D Klein Bottle), 6-plane hyper-rotations (XY, XZ, XW, YZ, YW, ZW), 3D cross-section slicing (4D CT-scanning), 4D particle gravity physics, and interactive 4D maze exploration.
 
 ---
 
-### 🌊 תכונות פיזיקליות וגרפיות (Features)
+### 🌌 4D Features & Capabilities (תכונות המערכת)
 
-1. **פיזיקת גלים מדויקת (Shallow Water Wave Equation)**:
-   - פתרון משוואת הגלים הדו-ממדית בזמן אמת: $\frac{\partial^2 h}{\partial t^2} = c^2 \nabla^2 h - \gamma \frac{\partial h}{\partial t}$.
-   - מהירות התפשטות גל, מתח פנים, חיכוך/צמיגות (מים, שמן, כספית).
-   - גלי התאבכות, נפיצה, עקיפה והחזרות מדפנות המכל.
+1. **4D Polytope Generator (גופים במרחב הארבע-ממדי)**:
+   - **Tesseract (8-cell / Hypercube)**: 16 vertices, 32 edges, 24 square faces, 8 cubic cells.
+   - **Pentachoron (5-cell / Simplex)**: 5 vertices, 10 edges, 10 triangular faces, 5 tetrahedral cells.
+   - **Hexadecachoron (16-cell / Cross-Polytope)**: 8 vertices, 24 edges, 32 faces, 16 cells.
+   - **Icositetrachoron (24-cell)**: Unique self-dual 4D regular polytope with 24 octahedral cells!
+   - **Hecatonicosachoron (120-cell)**: 120 dodecahedral cells, 600 vertices, 1200 edges.
+   - **Hexacosichoron (600-cell)**: 600 tetrahedral cells, 120 vertices.
+   - **4D Torus & Clifford Torus**: Curved 4D hyper-surface with dual angular coordinates $(\theta, \phi)$.
+   - **Spherinder (4D Cylinder)** & **4D Klein Bottle**.
 
-2. **אופטיקה מציאותית (Realistic Optics)**:
-   - **שבירת אור (Refraction)**: שבירת קרניים אופטית של קרקעית הבריכה והסלעים לפי מקדם השבירה ($n = 1.333$).
-   - **אפקט פרנל (Fresnel Reflection)**: חישוב יחס ההחזרה מול החדירה של האור על פי זווית הפגיעה (קירוב שליק).
-   - **בליעת צבע לפי עומק (Beer-Lambert Absorption)**: בליעה פיזיקלית מדויקת של אור אדום לעומת גווני טורקיז וכחול ים עמוק.
-   - **קאוסטיקה חיה (Dynamic Caustics)**: קרני אור מרוכזות על קרקעית המים המרקדות בהתאם לגלים.
-   - **ברק שמש ספקולרי (Specular Sunlight)**: נצנוצי שמש ממוקדים (Blinn-Phong) בהתאם למפת הנורמלים של פני המים.
+2. **6-Plane Hyper-Rotations (סיבובים ב-6 מישורי היפר)**:
+   - Rotations in 4D take place around 2D planes instead of 1D axes!
+   - Independent speed control for all 6 planes: **XY, XZ, XW, YZ, YW, ZW**.
+   - Support for **Isoclinic Double Rotations** (simultaneous rotation in orthogonal planes like XY + ZW) creating mind-bending Clifford flow!
 
-3. **גופים צפים עם חוק ארכימדס (Buoyant Rigid Bodies)**:
-   - כדורים, ברווז גומי, קוביות עץ, מגדלור צף ופרחי לוטוס.
-   - חישוב כוחות כבידה ($F_g$), כוח עילוי ציפה יחסי לנפח השקוע ($F_b = \rho V g$), מומנטי פיתול להתאמה לפני השטח של הגל, והיווצרות שובל גלים בעת תנועה.
-   - אפשרות לאינטראקציה ישירה – גרירת חפצים, השלכה לתוך המים והקפצה.
+3. **3D Slice Cross-Section (4D CT Scan)**:
+   - Slice a 4D shape with a 3D hyperplane moving along the W-axis ($W = w_0$).
+   - Watch the 3D cross-section dynamically morph in real time as the slice plane passes through the 4D object!
 
-4. **סביבות מים מגוונות (Environments & Lighting)**:
-   - 🏝️ **לגונה טרופית (Tropical Lagoon)**: חול לבן, שמש עזה, מי טורקיז צלולים במיוחד.
-   - 🏊 **בריכת יוקרה (Luxury Pool)**: אריחי פסיפס כחולים, גבולות זכוכית וקאוסטיקה בוהקת.
-   - 🌅 **שקיעה באוקיינוס (Ocean Sunset)**: אור זהוב, השתקפויות שמיים דרמטיות וגלים רגועים.
-   - 🌌 **ביולומיננסנציה לילית (Bioluminescent Night)**: מים עמוקים זוהרים באור כחול-זרחני מרהיב בכל מגע, לאור ירח וכוכבים.
-   - ⛈️ **סערה ימית (Stormy Ocean)**: גשם סוחף, עננים כבדים וקצף גלים סוער.
+4. **4D Particle Physics & Gravity Collider**:
+   - 4D point particles with 4D position $(x, y, z, w)$ and velocity vectors $(v_x, v_y, v_z, v_w)$.
+   - Particles orbit a 4D central gravitational attractor ($F \propto 1 / r^3$ in 4D space!) or bounce inside a 4D hypercube container.
 
-5. **כלי אינטראקציה (Interactive Tools)**:
-   - גרירת אצבע/עכבר ליצירת אדוות וגלים.
-   - מחולל גשם עם עוצמה נשלטת.
-   - תותח טיפות ומחולל גלים תדיר (Oscillator) להדגמת תבניות התאבכות.
-   - יצירת צונאמי וגלי הדף מרכזיים.
-   - סימולציית סאונד מים אקוסטית פרוצדורלית באמצעות Web Audio API (נתזים, טיפות, אדוות).
+5. **4D Hyper-Maze Game Mode**:
+   - Navigate a 4D maze using 4D movement controls ($W, A, S, D$ for X/Z, $Q, E$ for Y, and $I, K$ for W depth!).
+   - Reach the 4D target gem by moving through hyper-walls.
 
-6. **תמיכה מלאה ב-GitHub Pages**:
-   - מותאם ל-GitHub Actions אוטומטי (`deploy-pages.yml`).
-   - נתיבים יחסיים (`base: './'`).
-   - עובד חלק בכל דפדפן ומכשיר נייד/טאבלט.
+6. **Interactive Visual Effects**:
+   - Depth-in-W color gradient mapping (W-axis depth mapped from Neon Cyan to Hot Magenta / Violet).
+   - Wireframe, translucent 3D volumetric cell shading, and vertex glow.
+   - Perspective projection ($4D \rightarrow 3D \rightarrow 2D$) with adjustable 4D focal distance ($W_{\text{camera}}$).
+   - Full Hebrew & English bilingual support.
