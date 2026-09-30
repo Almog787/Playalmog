@@ -1,6 +1,6 @@
 {
   "name": "Littlest Tel Aviv: Israeli City 3D Animator",
-  "description": "Interactive Three.js 3D animated city transformed into an authentic Israeli metropolis with rooftop solar heaters, Israeli flags, Hebrew storefronts, e-scooters, and dynamic Mediterranean lighting",
+  "description": "דגל ישראל מתנוסס בתלת מימד ברזולוציה גבוהה עם סימולציית בד פיזיקלית, תאורה אטמוספרית מרהיבה ורוח דינמית.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

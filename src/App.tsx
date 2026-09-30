@@ -1,75 +1,60 @@
 import { useState, useCallback } from 'react';
-import ThreeCanvas from './components/ThreeCanvas';
-import UIOverlay from './components/UIOverlay';
-import { TimeOfDay, IsraeliPropsConfig, ViewPreset, CityHotspot } from './types/city';
-import { ambianceAudio } from './utils/audioAmbiance';
-import { VIEW_PRESETS } from './data/cityData';
+import FlagCanvas from './components/FlagCanvas';
+import FlagControls from './components/FlagControls';
+import { FlagSceneConfig, CameraPreset } from './components/FlagScene';
+import { flagWindAudio } from './utils/audioWind';
 
 export default function App() {
-  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('noon');
-  const [propsConfig, setPropsConfig] = useState<IsraeliPropsConfig>({
-    flags: true,
-    solarHeaters: true,
-    airConditioners: true,
-    hebrewSigns: true,
-    streetFurniture: true,
-    palmTrees: true,
-    nightLights: true,
+  const [config, setConfig] = useState<FlagSceneConfig>({
+    timeOfDay: 'noon',
+    windSpeed: 15,
+    windTurbulence: 0.65,
+    windDirection: 0,
+    slowMotion: false,
+    autoRotate: false,
   });
 
-  const [animationSpeed, setAnimationSpeed] = useState<number>(1.0);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [activeCameraPreset, setActiveCameraPreset] = useState<CameraPreset | null>(null);
   const [audioEnabled, setAudioEnabled] = useState<boolean>(false);
-  const [activePresetId, setActivePresetId] = useState<string>('overview');
-  const [activeHotspot, setActiveHotspot] = useState<CityHotspot | null>(null);
 
-  const handleToggleAudio = useCallback((enabled: boolean) => {
-    setAudioEnabled(enabled);
-    ambianceAudio.toggle(enabled);
+  const handleChangeConfig = useCallback((newConfig: Partial<FlagSceneConfig>) => {
+    setConfig((prev) => {
+      const updated = { ...prev, ...newConfig };
+      if (newConfig.windSpeed !== undefined) {
+        flagWindAudio.setWindIntensity(updated.windSpeed / 30);
+      }
+      return updated;
+    });
   }, []);
 
-  const handleSelectPreset = useCallback((preset: ViewPreset) => {
-    setActivePresetId(preset.id);
-    setActiveHotspot(null);
+  const handleSelectCameraPreset = useCallback((preset: CameraPreset) => {
+    setActiveCameraPreset(preset);
+    // Reset after trigger so it can be re-triggered
+    setTimeout(() => setActiveCameraPreset(null), 100);
   }, []);
 
-  const handleSelectHotspot = useCallback((hotspot: CityHotspot | null) => {
-    setActiveHotspot(hotspot);
-    if (hotspot) {
-      setActivePresetId('');
-    }
-  }, []);
+  const handleToggleAudio = useCallback(() => {
+    const nextState = !audioEnabled;
+    setAudioEnabled(nextState);
+    flagWindAudio.toggle(nextState);
+    flagWindAudio.setWindIntensity(config.windSpeed / 30);
+  }, [audioEnabled, config.windSpeed]);
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-slate-950 font-['Rubik','Heebo',sans-serif]">
-      {/* 3D WebGL Canvas */}
-      <ThreeCanvas
-        timeOfDay={timeOfDay}
-        propsConfig={propsConfig}
-        animationSpeed={animationSpeed}
-        isPlaying={isPlaying}
-        activePresetId={activePresetId}
-        activeHotspot={activeHotspot}
-        onSelectHotspot={handleSelectHotspot}
-        onLoaded={() => console.log('Littlest Tel Aviv Loaded')}
+      {/* 3D WebGL Photorealistic Flag */}
+      <FlagCanvas
+        config={config}
+        activeCameraPreset={activeCameraPreset}
       />
 
-      {/* Floating Interactive UI Overlay */}
-      <UIOverlay
-        timeOfDay={timeOfDay}
-        setTimeOfDay={setTimeOfDay}
-        propsConfig={propsConfig}
-        setPropsConfig={setPropsConfig}
-        animationSpeed={animationSpeed}
-        setAnimationSpeed={setAnimationSpeed}
-        isPlaying={isPlaying}
-        setIsPlaying={setIsPlaying}
+      {/* Discreet, elegant overlay controls */}
+      <FlagControls
+        config={config}
+        onChangeConfig={handleChangeConfig}
+        onSelectCameraPreset={handleSelectCameraPreset}
         audioEnabled={audioEnabled}
-        setAudioEnabled={handleToggleAudio}
-        onSelectPreset={handleSelectPreset}
-        activePresetId={activePresetId}
-        activeHotspot={activeHotspot}
-        onCloseHotspot={() => setActiveHotspot(null)}
+        onToggleAudio={handleToggleAudio}
       />
     </div>
   );

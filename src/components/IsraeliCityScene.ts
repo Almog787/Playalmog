@@ -6,6 +6,8 @@ import {
   createSolarPanelTexture,
   createACTexture,
   createLightRailSignTexture,
+  createTelAvivAdPillarTexture,
+  createTelOFunSignTexture,
 } from '../utils/israeliTextures';
 import { IsraeliPropsConfig } from '../types/city';
 
@@ -301,20 +303,70 @@ export function buildIsraeliCityAdditions(scene: THREE.Scene): IsraeliSceneManag
     return signMesh;
   };
 
-  // A. Street Signs (רחוב דיזנגוף & שדרות רוטשילד)
+  // A. Street Signs (רחוב דיזנגוף, שדרות רוטשילד, הרצל, שינקין, בן יהודה)
   const dizengoffTex = createIsraeliStreetSignTexture('רחוב דיזנגוף', 'Dizengoff St.');
   const rothschildTex = createIsraeliStreetSignTexture('שדרות רוטשילד', 'Rothschild Blvd.');
   const herzlTex = createIsraeliStreetSignTexture('רחוב הרצל', 'Herzl St.');
+  const sheinkinTex = createIsraeliStreetSignTexture('רחוב שינקין', 'Sheinkin St.');
+  const benYehudaTex = createIsraeliStreetSignTexture('רחוב בן יהודה', 'Ben Yehuda St.');
 
   createSign(dizengoffTex, [0.5, 0.2], [1.98, 1.25, 0.1], Math.PI / 2, 0.4);
   createSign(rothschildTex, [0.55, 0.2], [0.35, 1.15, 1.63], 0, 0.4);
   createSign(herzlTex, [0.45, 0.18], [-0.88, 1.2, 0.5], -Math.PI / 2, 0.4);
+  createSign(sheinkinTex, [0.48, 0.19], [1.98, 1.25, -0.75], Math.PI / 2, 0.4);
+  createSign(benYehudaTex, [0.5, 0.19], [-0.88, 1.2, -0.4], -Math.PI / 2, 0.4);
 
-  // B. Commercial Storefront Signs (שווארמה, קיוסק, קפה, טמבור, AM:PM, סופרפארם)
+  // Municipal Street Sign Post in Tel Aviv style
+  const createStreetSignPost = (
+    pos: [number, number, number],
+    tex1: THREE.CanvasTexture,
+    tex2?: THREE.CanvasTexture
+  ) => {
+    const postGroup = new THREE.Group();
+    postGroup.position.set(...pos);
+
+    // Dark grey municipal pole
+    const poleGeo = new THREE.CylinderGeometry(0.018, 0.02, 0.9, 12);
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
+    const pole = new THREE.Mesh(poleGeo, poleMat);
+    pole.position.y = 0.45;
+    postGroup.add(pole);
+
+    // Sign 1 on top
+    const s1Geo = new THREE.PlaneGeometry(0.38, 0.14);
+    const s1Mat = new THREE.MeshStandardMaterial({
+      map: tex1,
+      roughness: 0.2,
+      side: THREE.DoubleSide,
+    });
+    const s1 = new THREE.Mesh(s1Geo, s1Mat);
+    s1.position.set(0, 0.82, 0);
+    postGroup.add(s1);
+
+    if (tex2) {
+      const s2Mat = new THREE.MeshStandardMaterial({
+        map: tex2,
+        roughness: 0.2,
+        side: THREE.DoubleSide,
+      });
+      const s2 = new THREE.Mesh(s1Geo, s2Mat);
+      s2.position.set(0, 0.68, 0);
+      s2.rotation.y = Math.PI / 2;
+      postGroup.add(s2);
+    }
+
+    signsGroup.add(postGroup);
+  };
+
+  createStreetSignPost([1.92, 0.75, 1.45], dizengoffTex, rothschildTex);
+  createStreetSignPost([-0.72, 0.75, 1.52], herzlTex, sheinkinTex);
+
+  // B. Commercial Storefront Signs (שווארמה, פלאפל, קיוסק, קפה תמר, אבולעפיה, טמבור, AM:PM, סופרפארם)
   const shawarmaTex = createStoreSignTexture('shawarma');
   const falafelTex = createStoreSignTexture('falafel');
   const kioskTex = createStoreSignTexture('kiosk');
   const cafeTex = createStoreSignTexture('cafe');
+  const abulafiaTex = createStoreSignTexture('abulafia');
   const tambourTex = createStoreSignTexture('tambour');
   const ampmTex = createStoreSignTexture('ampm');
   const superpharmTex = createStoreSignTexture('superpharm');
@@ -331,6 +383,9 @@ export function buildIsraeliCityAdditions(scene: THREE.Scene): IsraeliSceneManag
   // Cafe Tamar
   createSign(cafeTex, [0.65, 0.32], [0.95, 1.15, -1.22], Math.PI, 0.7);
 
+  // Iconic Abulafia Bakery in Jaffa / Tel Aviv
+  createSign(abulafiaTex, [0.85, 0.42], [-0.86, 1.08, -0.6], -Math.PI / 2, 0.85);
+
   // Falafel Kaduri
   createSign(falafelTex, [0.75, 0.38], [-0.2, 1.6, 1.62], 0, 0.8);
 
@@ -345,7 +400,7 @@ export function buildIsraeliCityAdditions(scene: THREE.Scene): IsraeliSceneManag
   createSign(lightRailTex, [0.8, 0.2], [0.1, 1.88, -0.05], 0, 1.2);
 
   // -------------------------------------------------------------
-  // 5. ISRAELI STREET OBJECTS & FURNITURE (קורקינטים, דואר ישראל, פחים ירוקים)
+  // 5. ISRAELI STREET OBJECTS & FURNITURE (קורקינטים, דואר ישראל, פחים ירוקים, עמודי מודעות, ספסלים, ברזייה)
   // -------------------------------------------------------------
   // A. Israel Post Red Mailbox (תיבת דואר אדומה של דואר ישראל)
   const postBoxGroup = new THREE.Group();
@@ -368,7 +423,152 @@ export function buildIsraeliCityAdditions(scene: THREE.Scene): IsraeliSceneManag
   postBoxGroup.add(postBoxBody, postBoxCap, postPost);
   streetFurnitureGroup.add(postBoxGroup);
 
-  // B. Tel Aviv Shared E-Scooters (Lime / Bird / Wind קורקינט שיתופי)
+  // B. Tel Aviv Advertising Pillar (עמוד מודעות תל-אביבי עגול עם כרזות הבימה/הופעות)
+  const adPillarTex = createTelAvivAdPillarTexture();
+  const createAdPillar = (pos: [number, number, number]) => {
+    const pillar = new THREE.Group();
+    pillar.position.set(...pos);
+
+    // Concrete Plinth Base
+    const baseGeo = new THREE.CylinderGeometry(0.16, 0.18, 0.12, 24);
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.8 });
+    const base = new THREE.Mesh(baseGeo, baseMat);
+    base.position.y = 0.06;
+    pillar.add(base);
+
+    // Main Cylindrical Drum with Posters
+    const drumGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.55, 24);
+    const drumMat = new THREE.MeshStandardMaterial({
+      map: adPillarTex,
+      roughness: 0.6,
+    });
+    const drum = new THREE.Mesh(drumGeo, drumMat);
+    drum.position.y = 0.395;
+    pillar.add(drum);
+
+    // Dome Cap Roof (כובע עגול מעוצב באוהאוס)
+    const capGeo = new THREE.ConeGeometry(0.18, 0.12, 24);
+    const capMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 });
+    const cap = new THREE.Mesh(capGeo, capMat);
+    cap.position.y = 0.73;
+    pillar.add(cap);
+
+    // Small finial tip
+    const tip = new THREE.Mesh(
+      new THREE.SphereGeometry(0.025, 12, 12),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.9 })
+    );
+    tip.position.y = 0.8;
+    pillar.add(tip);
+
+    streetFurnitureGroup.add(pillar);
+  };
+
+  createAdPillar([1.88, 0.75, 0.35]);
+  createAdPillar([-0.7, 0.75, -1.0]);
+
+  // C. Tel Aviv Bauhaus Street Benches (ספסלי רחוב עץ עם שלד מתכת)
+  const createBench = (pos: [number, number, number], rotY: number) => {
+    const bench = new THREE.Group();
+    bench.position.set(...pos);
+    bench.rotation.y = rotY;
+    bench.scale.setScalar(0.7);
+
+    // Wooden Slats (לוחות עץ איפאה חם)
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x9a3412, roughness: 0.7 });
+    for (let i = 0; i < 4; i++) {
+      const slat = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.02, 0.04), woodMat);
+      slat.position.set(0, 0.18, -0.06 + i * 0.045);
+      bench.add(slat);
+    }
+    // Backrest slats
+    for (let i = 0; i < 3; i++) {
+      const bSlat = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.04, 0.02), woodMat);
+      bSlat.position.set(0, 0.24 + i * 0.045, -0.09);
+      bench.add(bSlat);
+    }
+
+    // Cast Iron Legs (שלד ברזל יצוק שחור)
+    const legMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8 });
+    const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.3, 0.22), legMat);
+    leg1.position.set(-0.16, 0.15, 0);
+    const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.3, 0.22), legMat);
+    leg2.position.set(0.16, 0.15, 0);
+    bench.add(leg1, leg2);
+
+    streetFurnitureGroup.add(bench);
+  };
+
+  createBench([1.82, 0.76, -0.4], Math.PI / 2);
+  createBench([-0.65, 0.76, 0.4], -Math.PI / 2);
+  createBench([0.45, 0.76, 1.62], 0);
+
+  // D. Tel Aviv Municipal Drinking Fountain with Dog Bowl (ברזיית מים כחולה עירונית עם שוקת לכלבים)
+  const createDrinkingFountain = (pos: [number, number, number], rotY: number) => {
+    const fountain = new THREE.Group();
+    fountain.position.set(...pos);
+    fountain.rotation.y = rotY;
+    fountain.scale.setScalar(0.75);
+
+    const fMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.7, roughness: 0.3 }); // Municipal blue
+    // Stand column
+    const col = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.45, 12), fMat);
+    col.position.y = 0.225;
+
+    // Human basin on top
+    const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.04, 0.06, 16), fMat);
+    basin.position.y = 0.45;
+
+    // Chrome Spout
+    const spoutMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95 });
+    const spout = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.06, 8), spoutMat);
+    spout.position.set(0, 0.49, 0.04);
+    spout.rotation.x = -0.4;
+
+    // Ground Dog Bowl (קערת שתייה לכלבים בתחתית הברזייה)
+    const dogBowl = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.05, 12), fMat);
+    dogBowl.position.set(0, 0.03, 0.12);
+
+    fountain.add(col, basin, spout, dogBowl);
+    streetFurnitureGroup.add(fountain);
+  };
+
+  createDrinkingFountain([1.78, 0.76, 0.75], Math.PI / 2);
+
+  // E. Tel-O-Fun / Shared Bicycle Stand (תחנת עגינה לאופניים תל-אופן)
+  const telOFunTex = createTelOFunSignTexture();
+  const createBikeStand = (pos: [number, number, number], rotY: number) => {
+    const station = new THREE.Group();
+    station.position.set(...pos);
+    station.rotation.y = rotY;
+    station.scale.setScalar(0.7);
+
+    // Green docking rail
+    const railMat = new THREE.MeshStandardMaterial({ color: 0x16a34a, metalness: 0.6, roughness: 0.4 });
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.04, 0.12), railMat);
+    rail.position.y = 0.08;
+    station.add(rail);
+
+    // Docking posts
+    for (let i = 0; i < 3; i++) {
+      const dock = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.28, 8), railMat);
+      dock.position.set(-0.16 + i * 0.16, 0.14, 0);
+      station.add(dock);
+    }
+
+    // Tel-O-Fun Terminal Sign
+    const signGeo = new THREE.PlaneGeometry(0.18, 0.09);
+    const signMat = new THREE.MeshStandardMaterial({ map: telOFunTex, side: THREE.DoubleSide });
+    const sign = new THREE.Mesh(signGeo, signMat);
+    sign.position.set(0.24, 0.28, 0);
+    station.add(sign);
+
+    streetFurnitureGroup.add(station);
+  };
+
+  createBikeStand([-0.72, 0.76, -0.1], -Math.PI / 2);
+
+  // F. Tel Aviv Shared E-Scooters (Lime / Bird / Wind קורקינט שיתופי)
   const createScooter = (pos: [number, number, number], rotY: number, color: number = 0x84cc16) => {
     const scooter = new THREE.Group();
     scooter.position.set(...pos);
@@ -415,8 +615,9 @@ export function buildIsraeliCityAdditions(scene: THREE.Scene): IsraeliSceneManag
   createScooter([1.75, 0.78, 1.25], 0.4, 0x84cc16); // Lime scooter
   createScooter([1.78, 0.78, 1.15], 0.25, 0x0284c7); // Wind blue scooter
   createScooter([-0.6, 0.82, 1.55], -1.1, 0xf43f5e); // Bird pink scooter
+  createScooter([-0.65, 0.82, 1.45], -1.3, 0x84cc16); // Lime scooter
 
-  // C. Green Israeli "Tzparon" Recycling / Garbage Bin (פח ירוק עירוני)
+  // G. Green Israeli "Tzparon" Recycling / Garbage Bin (פח ירוק עירוני)
   const createGreenBin = (pos: [number, number, number], rotY: number) => {
     const bin = new THREE.Group();
     bin.position.set(...pos);

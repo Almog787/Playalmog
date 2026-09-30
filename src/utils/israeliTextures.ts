@@ -104,7 +104,7 @@ export function createIsraeliStreetSignTexture(
  * Creates Hebrew Storefront Signs (Shawarma, Kiosk, Cafe, Tambour, AM:PM, etc.)
  */
 export function createStoreSignTexture(
-  type: 'shawarma' | 'kiosk' | 'cafe' | 'tambour' | 'ampm' | 'superpharm' | 'falafel' | 'post'
+  type: 'shawarma' | 'kiosk' | 'cafe' | 'tambour' | 'ampm' | 'superpharm' | 'falafel' | 'post' | 'abulafia'
 ): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
@@ -269,7 +269,119 @@ export function createStoreSignTexture(
     ctx.fillStyle = '#FEE2E2';
     ctx.font = 'bold 28px Rubik, sans-serif';
     ctx.fillText('ISRAEL POST', canvas.width / 2, 160);
+  } else if (type === 'abulafia') {
+    // Iconic Abulafia Bakery in Jaffa / Tel Aviv
+    ctx.fillStyle = '#1E1B18';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = '#D97706';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+    ctx.fillStyle = '#FBBF24';
+    ctx.font = '900 48px Heebo, Rubik, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('מאפיית אבולעפיה 🥖', canvas.width / 2, 85);
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 28px Heebo, Rubik, sans-serif';
+    ctx.fillText('בייגלה שומשום חם • פיתות בטאבון', canvas.width / 2, 145);
+
+    ctx.fillStyle = '#FDE68A';
+    ctx.font = '600 22px Rubik, sans-serif';
+    ctx.fillText('EST. 1879 • ABULAFIA BAKERY', canvas.width / 2, 195);
   }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+/**
+ * Creates Tel Aviv Advertising Pillar (עמוד מודעות תל אביבי עגול) posters texture
+ */
+export function createTelAvivAdPillarTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d')!;
+
+  // Aged plastered paper background
+  ctx.fillStyle = '#E2E8F0';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Poster 1: Habima Theater (תיאטרון הבימה תל אביב)
+  ctx.fillStyle = '#991B1B';
+  ctx.fillRect(20, 20, 300, 472);
+  ctx.fillStyle = '#FEF08A';
+  ctx.font = '900 36px Heebo, Rubik, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('תיאטרון הבימה', 170, 70);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 24px Heebo, sans-serif';
+  ctx.fillText('הבימה תל אביב 🎭', 170, 120);
+  ctx.fillText('ההצגה החדשה', 170, 160);
+  ctx.fillStyle = '#FCA5A5';
+  ctx.font = '20px Rubik, sans-serif';
+  ctx.fillText('HABIMA THEATRE', 170, 210);
+
+  // Poster 2: Concert in Hayarkon Park (הופעה בפארק הירקון)
+  ctx.fillStyle = '#1E1B4B';
+  ctx.fillRect(340, 20, 320, 472);
+  ctx.fillStyle = '#38BDF8';
+  ctx.font = '900 34px Heebo, Rubik, sans-serif';
+  ctx.fillText('פסטיבל תל אביב', 500, 70);
+  ctx.fillStyle = '#F43F5E';
+  ctx.font = 'bold 26px Heebo, sans-serif';
+  ctx.fillText('פארק הירקון LIVE 🎸', 500, 120);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '22px Heebo, sans-serif';
+  ctx.fillText('כרטיסים בקופות', 500, 170);
+  ctx.fillStyle = '#BAE6FD';
+  ctx.font = '18px Rubik, sans-serif';
+  ctx.fillText('HAYARKON PARK CONCERT', 500, 220);
+
+  // Poster 3: Tel Aviv Museum of Art (מוזיאון תל אביב לאמנות)
+  ctx.fillStyle = '#064E3B';
+  ctx.fillRect(680, 20, 320, 472);
+  ctx.fillStyle = '#6EE7B7';
+  ctx.font = '900 32px Heebo, Rubik, sans-serif';
+  ctx.fillText('מוזיאון תל אביב', 840, 70);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 24px Heebo, sans-serif';
+  ctx.fillText('תערוכת באוהאוס 🏛️', 840, 120);
+  ctx.fillText('העיר הלבנה בראי הזמן', 840, 165);
+  ctx.fillStyle = '#A7F3D0';
+  ctx.font = '18px Rubik, sans-serif';
+  ctx.fillText('TEL AVIV ART MUSEUM', 840, 215);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  return texture;
+}
+
+/**
+ * Creates Tel-O-Fun / Tel Aviv Bike share docking sign texture
+ */
+export function createTelOFunSignTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d')!;
+
+  ctx.fillStyle = '#15803D';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = '900 36px Heebo, Rubik, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('תל-אופן 🚲', canvas.width / 2, 55);
+
+  ctx.fillStyle = '#BBF7D0';
+  ctx.font = 'bold 20px Rubik, sans-serif';
+  ctx.fillText('TEL-O-FUN BIKE SHARE', canvas.width / 2, 95);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;

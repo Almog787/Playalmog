@@ -20,6 +20,9 @@ import {
   Train,
   Bike,
   Sparkles,
+  Store,
+  Flame,
+  Flag,
   RefreshCw,
 } from 'lucide-react';
 import { TimeOfDay, IsraeliPropsConfig, ViewPreset, CityHotspot } from '../types/city';
@@ -74,6 +77,10 @@ export default function UIOverlay({
       case 'ShoppingBag': return <ShoppingBag className="w-4 h-4" />;
       case 'Train': return <Train className="w-4 h-4" />;
       case 'Bike': return <Bike className="w-4 h-4" />;
+      case 'Store': return <Store className="w-4 h-4" />;
+      case 'Sparkles': return <Sparkles className="w-4 h-4" />;
+      case 'Flame': return <Flame className="w-4 h-4" />;
+      case 'Flag': return <Flag className="w-4 h-4" />;
       default: return <Camera className="w-4 h-4" />;
     }
   };

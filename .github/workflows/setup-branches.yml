@@ -1,0 +1,171 @@
+name: Manage & Setup Repository Branches
+
+on:
+  workflow_dispatch:
+    inputs:
+      action_type:
+        description: 'בחר פעולה להכנת ענפים (Action to perform)'
+        required: true
+        type: choice
+        default: 'standard_setup'
+        options:
+          - 'standard_setup'
+          - 'custom_branch'
+          - 'feature_branch'
+          - 'release_branch'
+      branch_name:
+        description: 'שם הענף (אם בחרת custom/feature/release, למשל: dev / beach-promenade / v1.1.0)'
+        required: false
+        type: string
+        default: 'dev'
+      base_branch:
+        description: 'ענף הבסיס שממנו ייגזר הענף החדש (Base Branch)'
+        required: true
+        type: string
+        default: 'main'
+      create_tag:
+        description: 'האם ליצור גם Git Tag תואם? (שימושי לשחרור גרסאות)'
+        required: false
+        type: boolean
+        default: false
+      tag_name:
+        description: 'שם התג (במידה וסימנת ליצור Tag, למשל: v1.0.0)'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  manage_branches:
+    name: Setup & Manage Branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup & Push Branches
+        id: branch_step
+        run: |
+          ACTION="${{ github.event.inputs.action_type }}"
+          BASE="${{ github.event.inputs.base_branch }}"
+          CUSTOM_NAME="${{ github.event.inputs.branch_name }}"
+          CREATE_TAG="${{ github.event.inputs.create_tag }}"
+          TAG_NAME="${{ github.event.inputs.tag_name }}"
+
+          # Verify base branch exists
+          echo "🔍 Checking out base branch: $BASE..."
+          if git checkout "$BASE" 2>/dev/null || git checkout -b "$BASE" "origin/$BASE" 2>/dev/null; then
+            echo "✅ Base branch '$BASE' found."
+            git pull origin "$BASE" || true
+          else
+            echo "⚠️ Could not checkout '$BASE', falling back to HEAD."
+          fi
+
+          CREATED_BRANCHES=()
+          EXISTING_BRANCHES=()
+          CREATED_TAGS=()
+
+          create_or_report_branch() {
+            local target_branch="$1"
+            echo "----------------------------------------"
+            echo "Processing branch: $target_branch from $BASE"
+            
+            # Check if branch exists on remote
+            if git ls-remote --heads origin "$target_branch" | grep -q "$target_branch"; then
+              echo "ℹ️ Branch '$target_branch' already exists on remote origin."
+              EXISTING_BRANCHES+=("$target_branch")
+            else
+              echo "🚀 Creating new branch '$target_branch'..."
+              git checkout -B "$target_branch" "$BASE"
+              git push origin "$target_branch"
+              echo "✅ Branch '$target_branch' created and pushed successfully."
+              CREATED_BRANCHES+=("$target_branch")
+            fi
+          }
+
+          case "$ACTION" in
+            "standard_setup")
+              echo "📦 Running standard setup (dev, staging)..."
+              create_or_report_branch "dev"
+              create_or_report_branch "staging"
+              ;;
+            "custom_branch")
+              if [ -z "$CUSTOM_NAME" ]; then
+                echo "❌ Error: Branch name cannot be empty."
+                exit 1
+              fi
+              create_or_report_branch "$CUSTOM_NAME"
+              ;;
+            "feature_branch")
+              if [ -z "$CUSTOM_NAME" ]; then
+                echo "❌ Error: Feature branch name cannot be empty."
+                exit 1
+              fi
+              CLEAN_NAME=$(echo "$CUSTOM_NAME" | sed 's|^feature/||')
+              TARGET_FEATURE="feature/$CLEAN_NAME"
+              create_or_report_branch "$TARGET_FEATURE"
+              ;;
+            "release_branch")
+              if [ -z "$CUSTOM_NAME" ]; then
+                echo "❌ Error: Release name cannot be empty."
+                exit 1
+              fi
+              CLEAN_NAME=$(echo "$CUSTOM_NAME" | sed 's|^release/||')
+              TARGET_RELEASE="release/$CLEAN_NAME"
+              create_or_report_branch "$TARGET_RELEASE"
+              ;;
+            *)
+              echo "❌ Unknown action: $ACTION"
+              exit 1
+              ;;
+          esac
+
+          # Create Tag if requested
+          if [ "$CREATE_TAG" = "true" ] && [ -n "$TAG_NAME" ]; then
+            echo "🏷️ Creating Git Tag: $TAG_NAME..."
+            if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+              echo "⚠️ Tag '$TAG_NAME' already exists."
+            else
+              git tag -a "$TAG_NAME" -m "Release $TAG_NAME created via GitHub Actions"
+              git push origin "$TAG_NAME"
+              echo "✅ Tag '$TAG_NAME' pushed successfully."
+              CREATED_TAGS+=("$TAG_NAME")
+            fi
+          fi
+
+          # Output markdown summary for GitHub UI
+          echo "## 🌿 Branch Setup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Action Performed:** \`$ACTION\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Base Branch:** \`$BASE\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ ${#CREATED_BRANCHES[@]} -gt 0 ]; then
+            echo "### ✅ Newly Created Branches:" >> $GITHUB_STEP_SUMMARY
+            for b in "${CREATED_BRANCHES[@]}"; do
+              echo "- 🌿 \`$b\`" >> $GITHUB_STEP_SUMMARY
+            done
+          fi
+
+          if [ ${#EXISTING_BRANCHES[@]} -gt 0 ]; then
+            echo "### ℹ️ Already Existing Branches:" >> $GITHUB_STEP_SUMMARY
+            for b in "${EXISTING_BRANCHES[@]}"; do
+              echo "- 📁 \`$b\` (skipped creation)" >> $GITHUB_STEP_SUMMARY
+            done
+          fi
+
+          if [ ${#CREATED_TAGS[@]} -gt 0 ]; then
+            echo "### 🏷️ Created Tags:" >> $GITHUB_STEP_SUMMARY
+            for t in "${CREATED_TAGS[@]}"; do
+              echo "- 🏷️ \`$t\`" >> $GITHUB_STEP_SUMMARY
+            done
+          fi
